@@ -183,6 +183,9 @@ class ExportLayer(object):
 
         # only allow databases for target
         self.parameters[2].filter.list = ['Local Database', 'Remote Database']
+        
+        # allow multivalue input for export
+        self.parameters[1].multiValue = True
 
         # disable layer parameter for now
         self.parameters[1].enabled = False
@@ -230,12 +233,19 @@ class ExportLayer(object):
         Reference the business logic captured in your object defined
         separately in the module, preferably above.
         """
-        # populate parameters into cad file instance
-        cad_file = CadFile(parameters[0].valueAsText)
-        cad_layer = parameters[1].valueAsText
-        output_gdb = parameters[2].valueAsText
-
-        # execute tool
-        cad_file.export_layer(cad_layer, output_gdb)
+        
+        # allow overwriting
+        arcpy.env.overwriteOutput = True
+        
+        # loop through selected layers
+        for layer in parameters[1].valueAsText.split(';'):
+            # populate parameters into cad file instance
+            cad_file = CadFile(parameters[0].valueAsText)
+            cad_layer = layer
+            output_gdb = parameters[2].valueAsText
+            
+            # execute tool
+            arcpy.AddMessage("Exporting %s..." % cad_layer)
+            cad_file.export_layer(cad_layer, output_gdb)
 
         return
