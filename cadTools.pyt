@@ -28,7 +28,7 @@ class CadLayer(object):
     def __init__(self, cad_file, cad_fc, cad_layer):
         self.cad_file = cad_file
         self.cad_fc = cad_fc
-        self.name = cad_layer
+        self.name = cad_layer + "_" + cad_fc
 
     def export(self, output_gdb, new_name=None):
         """
